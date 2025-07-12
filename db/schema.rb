@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_12_185553) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_12_192234) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -25,7 +25,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_12_185553) do
   end
 
   create_table "processor_statuses", force: :cascade do |t|
-    t.string "min_response_time", null: false
+    t.integer "min_response_time", null: false
     t.boolean "failing_status", default: false, null: false
     t.bigint "processor_id", null: false
     t.datetime "created_at", null: false
