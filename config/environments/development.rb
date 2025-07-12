@@ -24,7 +24,14 @@ Rails.application.configure do
   end
 
   # Change to :null_store to avoid any caching.
-  config.cache_store = :memory_store
+  
+  config.cache_store = :solid_cache_store
+
+  # Solid queue configuration.
+  # Replace the default in-process and non-durable queuing backend for Active Job.
+  config.active_job.queue_adapter = :solid_queue
+  config.solid_queue.connects_to = { database: { writing: :queue } }
+  config.solid_queue.logger = ActiveSupport::Logger.new(STDOUT)
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
