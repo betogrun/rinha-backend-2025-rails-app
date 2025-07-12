@@ -35,6 +35,10 @@ development:
     <<: *default
     database: rinha_backend_2025_rails_app_queue_development
     migrations_paths: db/queue_migrate
+  cache:
+    <<: *default
+    database: rinha_backend_2025_rails_app_cache_development
+    migrations_paths: db/cache_migrate
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
