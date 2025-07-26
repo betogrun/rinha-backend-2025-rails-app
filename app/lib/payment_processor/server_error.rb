@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module PaymentProcessor
-  class Error < StandardError; end
+  class ServerError < Error; end
 end

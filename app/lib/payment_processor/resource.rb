@@ -19,7 +19,35 @@ module PaymentProcessor
     def handle_response(response)
       return response.body if response.success?
 
-      raise PaymentProcessors::Error, "Request failed with status #{response.status}: #{response.body}"
+      error_message = "Request failed with status #{response.status}: #{response.body}"
+      raise error_for_status(response.status), error_message
+    end
+
+    def error_for_status(status)
+      case status
+      when 400
+        PaymentProcessor::ClientError::BadRequestError
+      when 404
+        PaymentProcessor::ClientError::NotFoundError
+      when 422
+        PaymentProcessor::ClientError::UnprocessableEntityError
+      when 429
+        PaymentProcessor::ClientError::TooManyRequestsError
+      when 500
+        PaymentProcessor::ServerError::InternalServerError
+      when 502
+        PaymentProcessor::ServerError::BadGatewayError
+      when 503
+        PaymentProcessor::ServerError::ServiceUnavailableError
+      when 504
+        PaymentProcessor::ServerError::GatewayTimeoutError
+      when 400..499
+        PaymentProcessor::ClientError
+      when 500..599
+        PaymentProcessor::ServerError
+      else
+        PaymentProcessor::Error
+      end
     end
   end
 end
