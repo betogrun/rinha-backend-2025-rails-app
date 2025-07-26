@@ -13,7 +13,7 @@ module PaymentProcessor
         status = client.health_status.check
 
         Rails.cache.write("fallback_payment_processor_health_status", status) if status != current_status
-        PaymentProcessor::Fallback::RetrieveStatus.perform_in(6.seconds) unless should_stop?
+        PaymentProcessor::Fallback::RetrieveStatus.perform_later(wait: 6.seconds) unless should_stop?
       end
 
       private
