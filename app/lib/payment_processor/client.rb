@@ -21,7 +21,7 @@ module PaymentProcessor
     private
 
     def connection
-      @connection ||= Faraday.new(url: processors[@processor]) do |conn|
+      @connection ||= Faraday.new(url: processors[@processor.to_sym]) do |conn|
         conn.adapter @adapter
         conn.headers["Content-Type"] = "application/json"
         conn.headers["Accept"] = "application/json"

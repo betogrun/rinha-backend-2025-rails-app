@@ -13,6 +13,12 @@ module PaymentProcessor
       def failing?
         @failing
       end
+
+      def ==(other)
+        return false unless other.is_a?(HealthStatus)
+
+        @failing == other.failing && @min_response_time == other.min_response_time
+      end
     end
   end
 end
