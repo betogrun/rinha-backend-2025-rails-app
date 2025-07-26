@@ -33,7 +33,7 @@ module PaymentProcessor
 
     def calculate_performance_bonus(response_time)
       bonus = (11 - response_time) * 0.02
-      [bonus, 0].max
+      [ bonus, 0 ].max
     end
 
     def fees
