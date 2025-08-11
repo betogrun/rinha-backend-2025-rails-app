@@ -98,7 +98,7 @@ production:
   primary: &primary_production
     <<: *default
     database: rinha_backend_2025_rails_app_production
-    username: rinha_backend_2025_rails_app
+    username: <%= ENV["DATABASE_USERNAME"] %>
     password: <%= ENV["DATABASE_PASSWORD"] %>
   cache:
     <<: *primary_production

@@ -3,7 +3,7 @@
 module PaymentProcessor
   class Default
     class RetrieveStatus < ApplicationJob
-      queue_as :default
+      queue_as :status
 
       retry_on PaymentProcessor::ClientError::TooManyRequestsError, wait: :exponentially_longer, attempts: 3
       retry_on PaymentProcessor::Error, wait: 2.seconds, attempts: 2

@@ -1,5 +1,4 @@
 # syntax=docker/dockerfile:1
-# check=error=true
 
 # This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
 # docker build -t rinha_backend_2025_rails_app .
@@ -42,14 +41,29 @@ RUN bundle install && \
 # Copy application code
 COPY . .
 
-# Precompile bootsnap code for faster boot times
-RUN bundle exec bootsnap precompile app/ lib/
+# Extract secret_key_base during build and inject into ENV
+RUN --mount=type=secret,id=rails_master_key \
+    export RAILS_MASTER_KEY=$(cat /run/secrets/rails_master_key) && \
+    SECRET_KEY_BASE=$(bundle exec ruby -e "require 'rails'; require_relative 'config/application'; puts Rails.application.credentials.secret_key_base") && \
+    echo "$SECRET_KEY_BASE" > /rails/secret_key_base.txt && \
+    bundle exec bootsnap precompile app/ lib/
 
 
+# # Precompile bootsnap code for faster boot times
+# RUN bundle exec bootsnap precompile app/ lib/
 
+# RUN --mount=type=secret,id=rails_master_key \
+#     export RAILS_MASTER_KEY=$(cat /run/secrets/rails_master_key) && \
+#     bundle exec bootsnap precompile app/ lib/
 
 # Final stage for app image
 FROM base
+
+# Get build args
+ARG SECRET_KEY_BASE
+
+# Set secret key as final ENV
+ENV SECRET_KEY_BASE=$SECRET_KEY_BASE
 
 # Copy built artifacts: gems, application
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"

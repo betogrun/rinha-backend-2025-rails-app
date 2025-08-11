@@ -6,12 +6,15 @@ if [ -z "${LD_PRELOAD+x}" ]; then
     export LD_PRELOAD
 fi
 
-# If running the rails server then create or migrate existing database
-if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
-  ./bin/rails db:prepare
-  ./bin/rails db:migrate:cache
-  ./bin/rails db:migrate:queue
+# Ensure SECRET_KEY_BASE is present for any Rails command
+if [ -z "${SECRET_KEY_BASE}" ] && [ -s /rails/secret_key_base.txt ]; then
+  export SECRET_KEY_BASE="$(cat /rails/secret_key_base.txt)"
+fi
 
+# If running the rails server then create or migrate existing database
+# if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
+if [ "$RUN_DB_PREPARE" = "true" ]; then
+  ./bin/rails db:prepare
 fi
 
 exec "${@}"
