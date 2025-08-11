@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ProcessPaymentJob < ApplicationJob
-  queue_as :default
+  queue_as :payments
   retry_on PaymentProcessor::Error, wait: 2.seconds, attempts: 3
 
   def perform(correlation_id, amount, requested_at)
